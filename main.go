@@ -29,16 +29,15 @@ var (
 func main() {
 	flag.Parse()
 
-	/*#########################*/
+	workDir := "./videos/"+*file
 
 	if *operate == "merge" {
-		merge(*file)
+		merge(workDir, *file)
 	} else if *operate != "down" {
 		log.Println("you were selected a invaild operation")
 		os.Exit(1)
 	}
 
-	workDir := "./videos/"+*file
 	os.RemoveAll(workDir)
 	err := os.MkdirAll(workDir, os.ModePerm)
 	if err != nil {
@@ -138,7 +137,7 @@ func main() {
 	if count != 0 {
 		log.Println("Had something happend error")
 	} else {
-		merge(*file)
+		merge(".", *file)
 	}
 	log.Println("Done")
 }
@@ -227,20 +226,20 @@ func catchM3U8(url string) []byte {
 	return data
 }
 
-func merge(file string){
-	err := os.Chdir("./videos/"+file)
+func merge(file, fileName string){
+	err := os.Chdir(file)
 	if err != nil {
 		log.Println(err.Error())
 		os.Exit(1)
 	}
 
-	f, err := os.Open("./"+file+".m3u8")
+	f, err := os.Open("./"+fileName+".m3u8")
 	if err != nil {
 		log.Println(err.Error())
 		os.Exit(1)
 	}
 
-	videos, err := os.Create("./"+file+".avi")
+	videos, err := os.Create("./"+fileName+".avi")
 	if err != nil {
 		f.Close()
 		log.Println(err.Error())
