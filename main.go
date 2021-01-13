@@ -78,6 +78,7 @@ func main() {
 		*url = strings.Join(dst, "/")
 		data = catchM3U8(*url)
 		if data == nil {
+			log.Println("get data error"+*url)
 			os.Exit(1)
 		}
 		content = string(data)
@@ -134,6 +135,8 @@ func main() {
 	}
 
 	wg.Wait()
+	f.Close()
+
 	if count != 0 {
 		log.Println("Had something happend error")
 	} else {
@@ -266,6 +269,8 @@ func merge(file, fileName string){
 			break
 		}
 	}
+
+	log.Println("Done")
 
 	f.Close()
 	videos.Close()
