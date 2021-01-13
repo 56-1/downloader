@@ -13,6 +13,7 @@ import (
 )
 
 var (
+	count   int
 	RWMu    sync.RWMutex
 	mu      sync.Mutex
 	wg      sync.WaitGroup
@@ -134,6 +135,11 @@ func main() {
 	}
 
 	wg.Wait()
+	if count != 0 {
+		log.Println("Had something happend error")
+	} else {
+		merge(*file)
+	}
 	log.Println("Done")
 }
 
@@ -183,6 +189,7 @@ func down(url string, limit chan int) {
 	if err != nil {
 		RWMu.Lock()
 		defer RWMu.Unlock()
+		count++
 		f, err := os.OpenFile("./errMsg.txt", os.O_WRONLY|os.O_APPEND, os.FileMode(0666))
 		if err != nil {
 			log.Println(err.Error())
@@ -250,6 +257,11 @@ func merge(file string){
 			break
 		}
 		_, err = videos.Write(data)
+		if err != nil {
+			log.Println(err.Error())
+			break
+		}
+		err = os.Remove(tsFile)
 		if err != nil {
 			log.Println(err.Error())
 			break
